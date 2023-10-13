@@ -17,7 +17,6 @@ along with VCMS. If not, see <http://www.gnu.org/licenses/>.
 */
 
 use vcms\filesystem\Folder;
-use vcms\filesystem\FolderElement;
 
 if (!is_object($libGlobal) || !$libAuth->isLoggedin())
     exit();
@@ -237,7 +236,7 @@ if (!empty($libAuth->getAemter())) {
 * functions
 */
 
-function displayFolderContents(Folder &$folder)
+function displayFolderContents(Folder &$folder): void
 {
     global $libAuth;
 
@@ -278,122 +277,7 @@ function displayFolderContents(Folder &$folder)
     echo '</tbody></table>';
 }
 
-function listFolderContentRec(&$rootFolderObject, $firstLevel)
-{
-    global $libAuth, $libModuleHandler;
-
-    echo '<div style="margin-left:1.5em">';
-
-    foreach ($rootFolderObject->nestedFolderElements as $folderElement) {
-        //folder?
-        if ($folderElement->type == 1) {
-            if (!$folderElement->isAmtsRootFolder() || $folderElement->hasNestedFolderElements()) {
-                if ($firstLevel) {
-                    echo '<div class="col-md-6">';
-                    echo '<div class="panel panel-default">';
-                    echo '<div class="panel-body">';
-                }
-
-                if ($folderElement->isOpen) {
-                    echo '<i class="fa fa-lg fa-fw fa-folder-open-o" aria-hidden="true"></i> ';
-                    echo '<a href="index.php?pid=intranet_directories&amp;aktion=close&amp;hash=' . $folderElement->getHash() . '">';
-                } else {
-                    echo '<i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i> ';
-                    echo '<a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '">';
-                }
-
-                echo $folderElement->name;
-                echo '</a>';
-
-                $size = $folderElement->getSize();
-
-                if ($size > 0) {
-                    echo ' <span class="text-muted"><small>' . getSizeString($folderElement->getSize()) . '</small></span>';
-                }
-
-                if ($folderElement->isDeleteable() && in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                    echo ' <a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
-                }
-
-                echo '<br />';
-
-                if ($folderElement->isOpen) {
-                    listFolderContentRec($folderElement, false);
-                }
-
-                if ($firstLevel) {
-                    echo '</div>';
-                    echo '</div>';
-                    echo '</div>';
-                }
-            }
-        } //file & readable?
-        elseif ($folderElement->type == 2 && in_array($libAuth->getGruppe(), $folderElement->readGroups)) {
-            $extension = $folderElement->getExtension();
-
-            switch ($extension) {
-                case 'doc':
-                case 'docx':
-                    echo '<i class="fa fa-lg fa-fw fa-file-word-o" aria-hidden="true"></i>';
-                    break;
-                case 'xls':
-                case 'xlsx':
-                    echo '<i class="fa fa-lg fa-fw fa-file-excel-o" aria-hidden="true"></i>';
-                    break;
-                case 'ppt':
-                case 'pptx':
-                    echo '<i class="fa fa-lg fa-fw fa-file-powerpoint-o" aria-hidden="true"></i>';
-                    break;
-                case 'pdf':
-                    echo '<i class="fa fa-lg fa-fw fa-file-pdf-o" aria-hidden="true"></i>';
-                    break;
-                case 'cdr':
-                case 'jpg':
-                case 'jpeg':
-                case 'gif':
-                case 'png':
-                case 'svg':
-                    echo '<i class="fa fa-lg fa-fw fa-file-image-o" aria-hidden="true"></i>';
-                    break;
-                case 'txt':
-                    echo '<i class="fa fa-lg fa-fw fa-file-text-o" aria-hidden="true"></i>';
-                    break;
-                case 'aac':
-                case 'mp3':
-                case 'wav':
-                    echo '<i class="fa fa-lg fa-fw fa-file-audio-o" aria-hidden="true"></i>';
-                    break;
-                case 'mp4':
-                case 'xvid':
-                    echo '<i class="fa fa-lg fa-fw fa-file-video-o" aria-hidden="true"></i>';
-                    break;
-                case 'html':
-                case 'htm':
-                case 'css':
-                    echo '<i class="fa fa-lg fa-fw fa-file-code-o" aria-hidden="true"></i>';
-                    break;
-                default:
-                    echo '<i class="fa fa-lg fa-fw fa-file-o" aria-hidden="true"></i>';
-            }
-
-            $fileName = $folderElement->getFilename();
-
-            echo ' <a href="api.php?iid=intranet_download&amp;hash=' . $folderElement->getHash() . '">' . $fileName . '</a>';
-            echo ' <span class="text-muted"><small>' . implode('', $folderElement->readGroups) . '</small></span>';
-            echo ' <span class="text-muted"><small>' . getSizeString($folderElement->getSize()) . '</small></span>';
-
-            if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                echo ' <a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
-            }
-
-            echo '<br />';
-        }
-    }
-
-    echo '</div>';
-}
-
-function getSizeString($size)
+function getSizeString($size): string
 {
     if ($size > 1000000) {
         return round($size / 1000000, 1) . ' MB';
