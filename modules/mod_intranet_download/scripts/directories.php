@@ -107,10 +107,24 @@ echo '<h1>Dateien</h1>';
 echo $libString->getErrorBoxText();
 echo $libString->getNotificationBoxText();
 
-echo '<div class="row">';
+$currentFolder = $rootFolderObject;
+if (isset($_GET['hash'])) {
+    $currentFolder = findInNestedFolderElements($rootFolderObject, $_GET['hash']);
+}
 
-displayFolderContents($rootFolderObject);
-//listFolderContentRec($rootFolderObject, true);
+echo '<div class="row">';
+echo '<ol class="breadcrumb">';
+echo '<li><a href="index.php?pid=intranet_directories">Dateien</a></li>';
+if ($currentFolder !== $rootFolderObject && $currentFolder != null) {
+    $nestingFolder = $currentFolder->nestingFolder;
+    while ($nestingFolder !== $rootFolderObject) {
+        echo '<li><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $nestingFolder->getHash() . '">' . $nestingFolder->name . '</a></li>';
+        $nestingFolder = $nestingFolder->nestingFolder;
+    }
+    echo '<li class="active">' . $currentFolder->name . '</li>';
+}
+echo '</ol>';
+displayFolderContents($currentFolder);
 
 echo '</div>';
 
@@ -225,27 +239,43 @@ if (!empty($libAuth->getAemter())) {
 
 function displayFolderContents(Folder &$folder)
 {
-    // TODO: What happens if the folder is empty?
+    global $libAuth;
+
+    if (!$folder->hasNestedFolderElements()) {
+        echo '<p class="text-center text-muted>Dieser Ordner ist leer</p>';
+        return;
+    }
+
     echo '<table class="table table-hover">';
-    echo '<tr>';
-    echo '<th>Datei</th>';
-    echo '<th>Sichtbar für</th>';
-    echo '<th>Größe</th>';
-    echo '</tr>';
+    echo '<thead><tr>';
+    echo '<th class="">Datei</th>';
+    echo '<th class=""><i class="fa fa-users"aria-hidden="true"></i></th>';
+    echo '<th class=""><i class="fa fa-hdd-o" aria-hidden="true"></i></th>';
+    echo '<th class=""></th>';
+    echo '</tr></thead><tbody>';
+
+    usort($folder->nestedFolderElements, fn($a, $b) => strcmp($a->type, $b->type));
     foreach ($folder->nestedFolderElements as $folderElement) {
         echo '<tr>';
         if ($folderElement->type == 1) { // folder
-            echo '<td><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '">' . $folderElement->name . '</a></td>';
-            echo '<td></td>';
-            echo '<td></td>';
-		} elseif ($folderElement->type == 2 && in_array($libAuth->getGruppe(), $folderElement->readGroups)) { // file
-			echo '<td><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '">' . $folderElement->getFilename() . '</a><i class="fa fa-lg fa-fw fa-file-o" aria-hidden="true"></i></td>';
-			echo '<td><span class="text-muted>' . implode('', $folderElement->readGroups) . '</span></td>';
-			echo '<td><span class="text-muted>' . getSizeString($folderElement->getSize()) . '</span></td>';
+            echo '<td class="col-xs-5 col-md-7"><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '"><i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i>' . $folderElement->name . '</a></td>';
+            echo '<td class="col-xs-2 col-md-1"></td>';
+            echo '<td class="col-xs-2 col-md-1"></td>';
+            if ($folderElement->isDeleteable() && in_array($folderElement->owningAmt, $libAuth->getAemter())) {
+                echo '<td class="col-xs-1"><a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+            }
+            echo '<td class="col-xs-1"></td>';
+        } elseif ($folderElement->type == 2 && in_array($libAuth->getGruppe(), $folderElement->readGroups)) { // file
+            echo '<td class="col-xs-5 col-md-7"><a href="api.php?iid=intranet_download&amp;hash=' . $folderElement->getHash() . '">' . getIconForFolder($folderElement) . $folderElement->getFileName() . '</a></td>';
+            echo '<td class="col-xs-2 col-md-1"><span class="text-muted">' . implode('', $folderElement->readGroups) . '</span></td>';
+            echo '<td class="col-xs-2 col-md-1"><span class="text-muted">' . getSizeString($folderElement->getSize()) . '</span></td>';
+            if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
+                echo '<td class="col-xs-1"><a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+            }
         }
         echo '</tr>';
     }
-    echo '</table>';
+    echo '</tbody></table>';
 }
 
 function listFolderContentRec(&$rootFolderObject, $firstLevel)
@@ -370,4 +400,63 @@ function getSizeString($size)
     } else {
         return round($size / 1000, 0) . ' KB';
     }
+}
+
+function getIconForFolder(\vcms\filesystem\File $file): string
+{
+    switch ($file->getExtension()) {
+        case 'doc':
+        case 'docx':
+            return '<i class="fa fa-lg fa-fw fa-file-word-o" aria-hidden="true"></i>';
+        case 'xls':
+        case 'xlsx':
+            return '<i class="fa fa-lg fa-fw fa-file-excel-o" aria-hidden="true"></i>';
+        case 'ppt':
+        case 'pptx':
+            return '<i class="fa fa-lg fa-fw fa-file-powerpoint-o" aria-hidden="true"></i>';
+        case 'pdf':
+            return '<i class="fa fa-lg fa-fw fa-file-pdf-o" aria-hidden="true"></i>';
+        case 'cdr':
+        case 'jpg':
+        case 'jpeg':
+        case 'gif':
+        case 'png':
+        case 'svg':
+            return '<i class="fa fa-lg fa-fw fa-file-image-o" aria-hidden="true"></i>';
+        case 'txt':
+            return '<i class="fa fa-lg fa-fw fa-file-text-o" aria-hidden="true"></i>';
+        case 'aac':
+        case 'mp3':
+        case 'wav':
+            return '<i class="fa fa-lg fa-fw fa-file-audio-o" aria-hidden="true"></i>';
+        case 'mp4':
+        case 'xvid':
+            return '<i class="fa fa-lg fa-fw fa-file-video-o" aria-hidden="true"></i>';
+        case 'html':
+        case 'htm':
+        case 'css':
+            return '<i class="fa fa-lg fa-fw fa-file-code-o" aria-hidden="true"></i>';
+        default:
+            return '<i class="fa fa-lg fa-fw fa-file-o" aria-hidden="true"></i>';
+    }
+}
+
+function findInNestedFolderElements(Folder &$topLevelFolder, ?string $hash): ?Folder
+{
+    if ($hash == null) return null;
+
+    foreach ($topLevelFolder->getNestedFolderElements() as $nested) {
+        if ($nested->type != 1) continue;
+
+        if ($nested->getHash() == $hash) {
+            return $nested;
+        }
+
+        $innerNested = findInNestedFolderElements($nested, $hash);
+        if ($innerNested != null) {
+            return $innerNested;
+        }
+    }
+
+    return null;
 }
