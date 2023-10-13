@@ -260,17 +260,20 @@ function displayFolderContents(Folder &$folder): void
             echo '<td class="col-xs-5 col-md-7"><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '"><i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i>' . $folderElement->name . '</a></td>';
             echo '<td class="col-xs-2 col-md-1"></td>';
             echo '<td class="col-xs-2 col-md-1"></td>';
+            echo '<td class="col-xs-1">';
             if ($folderElement->isDeleteable() && in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                echo '<td class="col-xs-1"><a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+                echo '<a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
             }
-            echo '<td class="col-xs-1"></td>';
+            echo '</td>';
         } elseif ($folderElement->type == 2 && in_array($libAuth->getGruppe(), $folderElement->readGroups)) { // file
             echo '<td class="col-xs-5 col-md-7"><a href="api.php?iid=intranet_download&amp;hash=' . $folderElement->getHash() . '">' . getIconForFolder($folderElement) . $folderElement->getFileName() . '</a></td>';
             echo '<td class="col-xs-2 col-md-1"><span class="text-muted">' . implode('', $folderElement->readGroups) . '</span></td>';
             echo '<td class="col-xs-2 col-md-1"><span class="text-muted">' . getSizeString($folderElement->getSize()) . '</span></td>';
+            echo '<td class="col-xs-1">';
             if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                echo '<td class="col-xs-1"><a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a></td>';
+                echo '<a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
             }
+            echo '</td>';
         }
         echo '</tr>';
     }
