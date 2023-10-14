@@ -259,7 +259,11 @@ function displayFolderContents(Folder &$folder): void
         if ($folderElement->type == 1) { // folder
             echo '<td class="col-xs-5 col-md-7"><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '"><i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i>' . $folderElement->name . '</a></td>';
             echo '<td class="col-xs-2 col-md-1"></td>';
-            echo '<td class="col-xs-2 col-md-1"></td>';
+            echo '<td class="col-xs-2 col-md-1">';
+            if ($folderElement->getSize() > 0) {
+                echo ' <span class="text-muted"><small>' . getSizeString($folderElement->getSize()) . '</small></span>';
+            }
+            echo '</td>';
             echo '<td class="col-xs-1">';
             if ($folderElement->isDeleteable() && in_array($folderElement->owningAmt, $libAuth->getAemter())) {
                 echo '<a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
