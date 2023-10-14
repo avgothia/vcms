@@ -257,7 +257,7 @@ function displayFolderContents(Folder &$folder): void
     foreach ($folder->nestedFolderElements as $folderElement) {
         echo '<tr>';
         if ($folderElement->type == 1) { // folder
-            echo '<td class="col-xs-5 col-md-7"><a href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '"><i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i>' . $folderElement->name . '</a></td>';
+            echo '<td class="col-xs-5 col-md-7"><a class="text-truncate" href="index.php?pid=intranet_directories&amp;aktion=open&amp;hash=' . $folderElement->getHash() . '"><i class="fa fa-lg fa-fw fa-folder-o" aria-hidden="true"></i>' . $folderElement->name . '</a></td>';
             echo '<td class="col-xs-2 col-md-1"></td>';
             echo '<td class="col-xs-2 col-md-1">';
             if ($folderElement->getSize() > 0) {
