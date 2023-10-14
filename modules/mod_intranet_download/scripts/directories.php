@@ -101,7 +101,6 @@ elseif (isset($_POST['aktion']) && $_POST['aktion'] == "newfolder" && isset($_PO
 /*
 * output
 */
-echo '<h1>Dateien</h1>';
 
 echo $libString->getErrorBoxText();
 echo $libString->getNotificationBoxText();
@@ -112,7 +111,7 @@ if (isset($_GET['hash'])) {
 }
 
 echo '<div class="row">';
-echo '<ol class="breadcrumb">';
+echo '<ol class="breadcrumb mt-5">';
 echo '<li><a href="index.php?pid=intranet_directories">Dateien</a></li>';
 if ($currentFolder !== $rootFolderObject && $currentFolder != null) {
     $nestingFolder = $currentFolder->nestingFolder;
