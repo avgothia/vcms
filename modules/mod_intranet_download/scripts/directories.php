@@ -135,7 +135,7 @@ if (!empty($libAuth->getAemter())) {
 
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
-    echo '<form action="index.php?pid=intranet_directories" method="post" enctype="multipart/form-data" class="form-horizontal">';
+    echo '<form action="index.php?pid=intranet_directories&aktion=open&hash=' . $currentFolder->getHash() . '" method="post" enctype="multipart/form-data" class="form-horizontal">';
     echo '<fieldset>';
     echo '<input type="hidden" name="aktion" value="upload" />';
     echo '<input type="hidden" id="hash" name="hash" value="' . $currentFolder->getHash() . '">';
