@@ -29,7 +29,7 @@ class LibRepositoryClient{
   function __construct(){
     global $libGlobal, $libFilesystem;
 
-		$this->repoHostname = 'api.' . $libGlobal->vcmsHostname;
+		$this->repoHostname = $libGlobal->vcmsHostname;
     $this->tempAbsoluteDirectoryPath = $libFilesystem->getAbsolutePath($this->tempRelativeDirectoryPath);
 	}
 
