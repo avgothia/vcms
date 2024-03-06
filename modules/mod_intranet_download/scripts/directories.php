@@ -127,7 +127,7 @@ displayFolderContents($currentFolder);
 echo '</div>';
 
 
-if (!empty($libAuth->getAemter())) {
+if (in_array($currentFolder->owningAmt, $libAuth->getAemter())) {
     /*
     * upload form
     */
