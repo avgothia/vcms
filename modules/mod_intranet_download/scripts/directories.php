@@ -138,20 +138,7 @@ if (!empty($libAuth->getAemter())) {
     echo '<form action="index.php?pid=intranet_directories" method="post" enctype="multipart/form-data" class="form-horizontal">';
     echo '<fieldset>';
     echo '<input type="hidden" name="aktion" value="upload" />';
-
-    echo '<div class="form-group">';
-    echo '<label for="hash" class="col-sm-3 control-label">in den Ordner</label>';
-    echo '<div class="col-sm-3"><select name="hash" class="form-control">';
-
-    foreach ($rootFolderObject->getNestedFoldersRec() as $folderElement) {
-        if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-            echo '<option value="' . $folderElement->getHash() . '">' . $folderElement->name . '</option>';
-        }
-    }
-
-    echo '</select></div>';
-    echo '</div>';
-
+    echo '<input type="hidden" id="hash" name="hash" value="' . $currentFolder->getHash() . '">';
 
     echo '<div class="form-group">';
     echo '<label class="col-sm-3 control-label">mit Leserecht für</label>';
