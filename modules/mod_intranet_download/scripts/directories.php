@@ -58,8 +58,8 @@ $hashes = $rootFolderObject->getHashMap();
 */
 
 //delete file
-if (isset($_GET['aktion']) && $_GET['aktion'] == 'delete' && isset($_GET['hash'])) {
-    $element = $hashes[$_GET['hash']];
+if (isset($_GET['aktion']) && $_GET['aktion'] == 'delete' && isset($_GET['deleteHash'])) {
+    $element = $hashes[$_GET['deleteHash']];
 
     if (in_array($element->owningAmt, $libAuth->getAemter())) {
         $element->delete();
@@ -240,7 +240,8 @@ function displayFolderContents(Folder &$folder): void
             echo '</td>';
             echo '<td class="col-xs-1">';
             if ($folderElement->isDeleteable() && in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                echo '<a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                $href = 'index.php?pid=intranet_directories&amp;aktion=delete&amp;deleteHash=' . $folderElement->getHash() . '&hash=' . $folder->getHash();
+                echo '<a href="' . $href . '" onclick="return confirm(\'Willst Du den Ordner wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
             }
             echo '</td>';
         } elseif ($folderElement->type == 2 && in_array($libAuth->getGruppe(), $folderElement->readGroups)) { // file
@@ -249,7 +250,8 @@ function displayFolderContents(Folder &$folder): void
             echo '<td class="col-xs-2 col-md-1"><span class="text-muted">' . getSizeString($folderElement->getSize()) . '</span></td>';
             echo '<td class="col-xs-1">';
             if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-                echo '<a href="index.php?pid=intranet_directories&amp;aktion=delete&amp;hash=' . $folderElement->getHash() . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
+                $href = 'index.php?pid=intranet_directories&amp;aktion=delete&amp;deleteHash=' . $folderElement->getHash() . '&hash=' . $folder->getHash();
+                echo '<a href="' . $href . '" onclick="return confirm(\'Willst Du die Datei wirklich löschen?\')"><i class="fa fa-trash" aria-hidden="true"></i></a>';
             }
             echo '</td>';
         }
