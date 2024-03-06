@@ -36,7 +36,7 @@ class LibRepositoryClient{
   function getModuleVersions(){
   	global $libGlobal, $libHttp, $libModuleHandler;
 
-    $manifestUrl = 'http://' .$this->repoHostname. '/manifest.json?id=' .$libGlobal->getSiteUrlAuthority(). '&version=' .$libGlobal->version;
+    $manifestUrl = 'https://' .$this->repoHostname. '/manifest.json?id=' .$libGlobal->getSiteUrlAuthority(). '&version=' .$libGlobal->version;
   	$modules = $libHttp->get($manifestUrl);
 
   	if(!is_array($modules)){
@@ -94,7 +94,7 @@ class LibRepositoryClient{
   	$isUpdate = is_dir($moduleAbsoluteDirectoryPath);
 
   	$libGlobal->notificationTexts[] = 'Lade Modulpaket aus dem Repository.';
-  	$libHttp->get('http://' .$this->repoHostname. '/packages/'. $module. '.tar', $tarAbsoluteFilePath);
+  	$libHttp->get('https://' .$this->repoHostname. '/packages/'. $module. '.tar', $tarAbsoluteFilePath);
 
   	//untar module package
   	$tar = new \pear\Archive\Archive_Tar($tarAbsoluteFilePath);
@@ -204,7 +204,7 @@ class LibRepositoryClient{
   	$tempEngineAbsoluteDirectoryPath = $libFilesystem->getAbsolutePath($tempEngineRelativeDirectoryPath);
 
   	$libGlobal->notificationTexts[] = 'Lade Enginepaket aus dem Repository.';
-  	$libHttp->get('http://' .$this->repoHostname. '/packages/engine.tar', $tarAbsoluteFilePath);
+  	$libHttp->get('https://' .$this->repoHostname. '/packages/engine.tar', $tarAbsoluteFilePath);
 
   	$tar = new \pear\Archive\Archive_Tar($tarRelativeFilePath);
   	$libGlobal->notificationTexts[] = 'Entpacke Enginepaket in den temp-Ordner.';
