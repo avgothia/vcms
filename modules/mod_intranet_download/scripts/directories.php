@@ -184,26 +184,14 @@ if (in_array($currentFolder->owningAmt, $libAuth->getAemter())) {
 
     echo '<div class="panel panel-default">';
     echo '<div class="panel-body">';
-    echo '<form action="index.php?pid=intranet_directories" method="post" class="form-horizontal">';
+    echo '<form action="index.php?pid=intranet_directories&aktion=open&hash=' . $currentFolder->getHash() . '" method="post" class="form-horizontal">';
     echo '<fieldset>';
     echo '<input type="hidden" name="aktion" value="newfolder" />';
+    echo '<input type="hidden" id="hash" name="hash" value="' . $currentFolder->getHash() . '">';
 
     echo '<div class="form-group">';
     echo '<label for="foldername" class="col-sm-3 control-label">Neuen Ordner</label>';
     echo '<div class="col-sm-3"><input type="text" id="foldername" name="foldername" class="form-control" /></div>';
-    echo '</div>';
-
-    echo '<div class="form-group">';
-    echo '<label for="hash" class="col-sm-3 control-label">in Ordner</label>';
-    echo '<div class="col-sm-3"><select name="hash" class="form-control">';
-
-    foreach ($rootFolderObject->getNestedFoldersRec() as $folderElement) {
-        if (in_array($folderElement->owningAmt, $libAuth->getAemter())) {
-            echo '<option value="' . $folderElement->getHash() . '">' . $folderElement->name . '</option>';
-        }
-    }
-
-    echo '</select></div>';
     echo '</div>';
 
     echo '<div class="form-group">';
