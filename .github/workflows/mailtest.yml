@@ -18,8 +18,7 @@ jobs:
         uses: dawidd6/action-send-mail@v3
         with:
           connection_url: ${{secrets.MAIL_CONNECTION}}
-          server_port: 465
           subject: Neues vcms update
           to: iw@avgothia.de
-          from: test test noreply@avgothia.de
-          body: Build job of ${{github.repository}} completed successfully!
+          from: noreply@avgothia.de
+          body: file://build/manifest.json
