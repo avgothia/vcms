@@ -1,0 +1,25 @@
+name: Deploy to update server
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: creates output
+        run:  sh ./build.sh
+
+      - name: Notify internetwart about changes
+        uses: dawidd6/action-send-mail@v3
+        with:
+          connection_url: ${{secrets.MAIL_CONNECTION}}
+          server_port: 25
+          subject: Neues vcms update
+          to: iw@avgothia.de
+          from: vcms deployment
+          body: Build job of ${{github.repository}} completed successfully!
