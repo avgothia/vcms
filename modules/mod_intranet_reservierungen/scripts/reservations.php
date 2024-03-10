@@ -49,23 +49,27 @@ if(isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET["id"]) &
 /*
 * output
 */
-echo '<h1>Reservierungen</h1>';
+echo '<div class="row mt-5 mb-5">';
+echo '<div class="col-xs-10">';
+echo '<h1 class="text-left mb-0 mt-0">Reservierungen</h1>';
+echo '</div>';
+echo '<div class="col-xs-2">';
+echo '<a href="index.php?pid=intranet_reservation_book" class="btn btn-primary mt-0 visible-xs-inline-block pull-right"><i class="fa fa-plus" aria-hidden="true"></i></a>';
+echo '<a href="index.php?pid=intranet_reservation_book" class="btn btn-primary mt-0 hidden-xs pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Reservieren</a>';
+echo '</div>';
+echo '</div>';
 
 echo $libString->getErrorBoxText();
 echo $libString->getNotificationBoxText();
-
-echo '<div class="panel panel-default">';
-echo '<div class="panel-body">';
-echo '<div class="btn-toolbar">';
-echo '<a href="index.php?pid=intranet_reservation_book" class="btn btn-default"><i class="fa fa-plus" aria-hidden="true"></i> Eine Reservierung hinzufügen</a>';
-echo '</div>';
-echo '</div>';
-echo '</div>';
 
 
 $stmt = $libDb->prepare("SELECT * FROM mod_reservierung_reservierung WHERE datum >= :datum ORDER BY datum");
 $stmt->bindValue(':datum', date('Y-m-d'));
 $stmt->execute();
+
+if ($stmt->rowCount() <= 0) {
+    echo '<p class="text-center text-muted">Keine Reservierungen</p>';
+}
 
 while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
 	echo '<div id="' .$row['id']. '" class="panel panel-default' .$libString->getLastInsertId($lastInsertId, $row['id']). '">';

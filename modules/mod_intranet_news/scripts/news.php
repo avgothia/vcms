@@ -65,7 +65,15 @@ if(isset($_REQUEST['action']) && $_REQUEST['action'] == 'delete' && isset($_REQU
 * output
 */
 
-echo '<h1>Neuigkeiten im ' .$libTime->getSemesterString($libGlobal->semester). '</h1>';
+echo '<div class="row mt-5 mb-5">';
+echo '<div class="col-xs-10 col-sm-9">';
+echo '<h1 class="text-left mb-0 mt-0">Neuigkeiten im ' . $libTime->getSemesterString($libGlobal->semester) . '</h1>';
+echo '</div>';
+echo '<div class="col-xs-2 col-sm-3">';
+echo '<a href="index.php?pid=intranet_news_write" class="btn btn-primary mt-0 visible-xs-inline-block pull-right"><i class="fa fa-plus" aria-hidden="true"></i></a>';
+echo '<a href="index.php?pid=intranet_news_write" class="btn btn-primary mt-0 hidden-xs pull-right"><i class="fa fa-plus" aria-hidden="true"></i> Neuer Beitrag</a>';
+echo '</div>';
+echo '</div>';
 
 echo $libString->getErrorBoxText();
 echo $libString->getNotificationBoxText();
