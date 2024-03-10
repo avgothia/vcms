@@ -172,3 +172,7 @@ label {
 .pt-5 {
 	padding-top: 3rem !important;
 }
+
+.btn-primary i.fa {
+	color: white;
+}
