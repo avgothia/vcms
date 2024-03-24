@@ -5,26 +5,23 @@
 	background-position: center;
 }
 
-#brand:hover,
-#brand:focus {
-	color: #146010;
-}
+:root {
+	--pcms-primary: #067e00;
+	--pcms-primary-rgb: 6, 126, 0;
 
-#nav li > a:hover,
-#nav li > a:focus:hover {
-	color: #146010;
-}
+	--pcms-primary-m1: #056700;
+	--pcms-primary-m1-rgb: 5, 103, 0;
 
-#nav li.active > a,
-#nav li.active > a:focus {
-	color: #146010;
-}
+	--pcms-primary-m2: #044d00;
+	--pcms-primary-m2-rgb: 4, 77, 0;
 
-a:link:not(.btn),
-a:visited:not(.btn) {
-	color: #146010;
-}
+	--pcms-primary-p1: #3aa034;
+	--pcms-primary-p1-rgb: 58, 160, 52;
 
-.calendar .today {
-	border-color: #146010;
+	--pcms-primary-p2: #5dbf57;
+	--pcms-primary-p2-rgb: 93, 191, 87;
+
+	--pcms-primary-bg-subtle: #a9c4a8;
+
+	--pcms-primary-border-subtle: #86be82;
 }
